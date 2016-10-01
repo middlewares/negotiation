@@ -46,9 +46,11 @@ class ContentEncoding implements ServerMiddlewareInterface
             $accept = $request->getHeaderLine('Accept-Encoding');
             $encoding = $this->negotiateHeader($accept, new EncodingNegotiator(), $this->encodings);
 
-            if ($encoding !== null) {
-                return $delegate->process($request->withHeader('Accept-Encoding', $encoding));
+            if ($encoding === null) {
+                return $delegate->process($request->withoutHeader('Accept-Encoding'));
             }
+
+            return $delegate->process($request->withHeader('Accept-Encoding', $encoding));
         }
 
         return $delegate->process($request);
