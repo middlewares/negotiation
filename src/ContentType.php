@@ -29,7 +29,7 @@ class ContentType implements ServerMiddlewareInterface
      */
     public function __construct(array $formats = null)
     {
-        $this->formats = $formats ?: require __DIR__.'/formats.php';
+        $this->formats = $formats ?: require __DIR__.'/formats_defaults.php';
     }
 
     /**
