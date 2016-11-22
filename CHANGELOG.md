@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Updated to `http-interop/http-middleware#0.3`
 
+### Fixed
+
+* `ContentEncoding` removes the `Accept-Encoding` header if it does not match with any available option.
+
 ## 0.1.1 - NEXT
 
 ### Fixed
