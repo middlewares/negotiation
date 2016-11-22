@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-* New `noSniff()` option
+* New `ContentType::noSniff()` option to add the `X-Content-Type-Options: nosniff` header (enabled by default)
 
 ### Changed
 
