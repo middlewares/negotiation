@@ -16,13 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-* `ContentEncoding` removes the `Accept-Encoding` header if it does not match with any available option.
-
-## 0.1.1 - NEXT
-
-### Fixed
-
-* Remove the `Content-Encoding` header if it doesn't match with the available values
+* *ContentEncoding* middleware removes the `Accept-Encoding` header if it does not match with any available option.
 
 ## 0.1.0 - 2016-10-01
 
