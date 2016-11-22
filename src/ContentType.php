@@ -23,6 +23,11 @@ class ContentType implements ServerMiddlewareInterface
     private $formats;
 
     /**
+     * @var boolean Include X-Content-Type-Options: nosniff
+     */
+    private $nosniff = true;
+
+    /**
      * Define de available formats.
      *
      * @param array|null $formats
@@ -47,6 +52,20 @@ class ContentType implements ServerMiddlewareInterface
     }
 
     /**
+     * Configure the nosniff option.
+     *
+     * @param bool $nosniff
+     *
+     * @return self
+     */
+    public function nosniff($nosniff = true)
+    {
+        $this->nosniff = $nosniff;
+
+        return $this;
+    }
+
+    /**
      * Process a server request and return a response.
      *
      * @param ServerRequestInterface $request
@@ -62,7 +81,11 @@ class ContentType implements ServerMiddlewareInterface
         $response = $delegate->process($request->withHeader('Accept', $contentType));
 
         if (!$response->hasHeader('Content-Type')) {
-            return $response->withHeader('Content-Type', $contentType.'; charset=utf-8');
+            $response = $response->withHeader('Content-Type', $contentType.'; charset=utf-8');
+        }
+
+        if ($this->nosniff && !$response->hasHeader('X-Content-Type-Options')) {
+            $response = $response->withHeader('X-Content-Type-Options', 'nosniff');
         }
 
         return $response;

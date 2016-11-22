@@ -61,5 +61,7 @@ class ContentTypeTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals($mime, (string) $response->getBody());
+        $this->assertEquals($mime.'; charset=utf-8', $response->getHeaderLine('Content-Type'));
+        $this->assertEquals('nosniff', $response->getHeaderLine('X-Content-Type-Options'));
     }
 }
