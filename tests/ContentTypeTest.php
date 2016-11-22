@@ -3,9 +3,10 @@
 namespace Middlewares\tests;
 
 use Middlewares\ContentType;
+use Middlewares\Utils\Dispatcher;
+use Middlewares\Utils\CallableMiddleware;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
-use mindplay\middleman\Dispatcher;
 
 class ContentTypeTest extends \PHPUnit_Framework_TestCase
 {
@@ -50,12 +51,12 @@ class ContentTypeTest extends \PHPUnit_Framework_TestCase
         $response = (new Dispatcher([
             new ContentType(),
 
-            function ($request) {
+            new CallableMiddleware(function ($request) {
                 $response = new Response();
                 $response->getBody()->write($request->getHeaderLine('Accept'));
 
                 return $response;
-            },
+            }),
         ]))->dispatch($request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);

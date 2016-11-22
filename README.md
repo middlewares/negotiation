@@ -1,7 +1,7 @@
 # middlewares/negotiation
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
-[![Software License][ico-license]](LICENSE.md)
+[![Software License][ico-license]](LICENSE)
 [![Build Status][ico-travis]][link-travis]
 [![Quality Score][ico-scrutinizer]][link-scrutinizer]
 [![Total Downloads][ico-downloads]][link-downloads]
@@ -12,8 +12,6 @@ Middleware using [wildurand/Negotiation](https://github.com/willdurand/Negotiati
 * [ContentType](#contenttype)
 * [ContentLanguage](#contentlanguage)
 * [ContentEncoding](#contentencoding)
-
-**Note:** This middleware is intended for server side only
 
 ## Requirements
 
@@ -52,6 +50,10 @@ Set the available formats to negotiate. By default uses [these](src/formats.php)
 #### `defaultFormat($format)`
 
 The default format used if the negotiation does not return a valid format. By default is `html`
+
+#### `noSniff()`
+
+Adds the `X-Content-Type-Options: nosniff` header, to mitigating [MIME confusión attacks.](https://blog.mozilla.org/security/2016/08/26/mitigating-mime-confusion-attacks-in-firefox/)
 
 ```php
 $request = (new ServerRequest())

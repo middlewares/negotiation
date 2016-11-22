@@ -3,9 +3,10 @@
 namespace Middlewares\tests;
 
 use Middlewares\ContentLanguage;
+use Middlewares\Utils\Dispatcher;
+use Middlewares\Utils\CallableMiddleware;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
-use mindplay\middleman\Dispatcher;
 
 class ContentLanguageTest extends \PHPUnit_Framework_TestCase
 {
@@ -55,12 +56,12 @@ class ContentLanguageTest extends \PHPUnit_Framework_TestCase
         $response = (new Dispatcher([
             new ContentLanguage($languages),
 
-            function ($request) {
+            new CallableMiddleware(function ($request) {
                 $response = new Response();
                 $response->getBody()->write($request->getHeaderLine('Accept-Language'));
 
                 return $response;
-            },
+            }),
         ]))->dispatch($request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
@@ -122,12 +123,12 @@ class ContentLanguageTest extends \PHPUnit_Framework_TestCase
         $response = (new Dispatcher([
             (new ContentLanguage($languages))->usePath()->redirect(),
 
-            function ($request) {
+            new CallableMiddleware(function ($request) {
                 $response = new Response();
                 $response->getBody()->write($request->getHeaderLine('Accept-Language'));
 
                 return $response;
-            },
+            }),
         ]))->dispatch($request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
