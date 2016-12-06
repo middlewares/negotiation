@@ -51,12 +51,12 @@ class ContentLanguageTest extends \PHPUnit_Framework_TestCase
     {
         $request = Factory::createServerRequest()->withHeader('Accept-Language', $accept);
 
-        $response = (new Dispatcher([
+        $response = Dispatcher::run([
             new ContentLanguage($languages),
             function ($request) {
                 echo $request->getHeaderLine('Accept-Language');
             },
-        ]))->dispatch($request);
+        ], $request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals($language, (string) $response->getBody());
@@ -114,12 +114,12 @@ class ContentLanguageTest extends \PHPUnit_Framework_TestCase
     {
         $request = Factory::createServerRequest([], 'GET', $uri)->withHeader('Accept-Language', $accept);
 
-        $response = (new Dispatcher([
+        $response = Dispatcher::run([
             (new ContentLanguage($languages))->usePath()->redirect(),
             function ($request) {
                 echo $request->getHeaderLine('Accept-Language');
             },
-        ]))->dispatch($request);
+        ], $request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals($language, (string) $response->getBody());

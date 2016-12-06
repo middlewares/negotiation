@@ -46,12 +46,12 @@ class ContentTypeTest extends \PHPUnit_Framework_TestCase
     {
         $request = Factory::createServerRequest([], 'GET', $uri)->withHeader('Accept', $accept);
 
-        $response = (new Dispatcher([
+        $response = Dispatcher::run([
             new ContentType(),
             function ($request) {
                 echo $request->getHeaderLine('Accept');
             },
-        ]))->dispatch($request);
+        ], $request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals($mime, (string) $response->getBody());

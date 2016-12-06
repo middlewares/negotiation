@@ -36,12 +36,12 @@ class ContentEncodingTest extends \PHPUnit_Framework_TestCase
     {
         $request = Factory::createServerRequest()->withHeader('Accept-Encoding', $accept);
 
-        $response = (new Dispatcher([
+        $response = Dispatcher::run([
             new ContentEncoding($encodings),
             function ($request) {
                 echo $request->getHeaderLine('Accept-Encoding');
             },
-        ]))->dispatch($request);
+        ], $request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals($encoding, (string) $response->getBody());
