@@ -23,7 +23,7 @@ class ContentType implements ServerMiddlewareInterface
     private $formats;
 
     /**
-     * @var boolean Include X-Content-Type-Options: nosniff
+     * @var bool Include X-Content-Type-Options: nosniff
      */
     private $nosniff = true;
 

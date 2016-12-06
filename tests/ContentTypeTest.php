@@ -4,9 +4,7 @@ namespace Middlewares\tests;
 
 use Middlewares\ContentType;
 use Middlewares\Utils\Dispatcher;
-use Middlewares\Utils\CallableMiddleware;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\Response;
+use Middlewares\Utils\Factory;
 
 class ContentTypeTest extends \PHPUnit_Framework_TestCase
 {
@@ -46,17 +44,13 @@ class ContentTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testFormats($uri, $accept, $mime)
     {
-        $request = (new ServerRequest([], [], $uri))->withHeader('Accept', $accept);
+        $request = Factory::createServerRequest([], 'GET', $uri)->withHeader('Accept', $accept);
 
         $response = (new Dispatcher([
             new ContentType(),
-
-            new CallableMiddleware(function ($request) {
-                $response = new Response();
-                $response->getBody()->write($request->getHeaderLine('Accept'));
-
-                return $response;
-            }),
+            function ($request) {
+                echo $request->getHeaderLine('Accept');
+            },
         ]))->dispatch($request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);

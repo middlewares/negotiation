@@ -4,9 +4,7 @@ namespace Middlewares\tests;
 
 use Middlewares\ContentEncoding;
 use Middlewares\Utils\Dispatcher;
-use Middlewares\Utils\CallableMiddleware;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\Response;
+use Middlewares\Utils\Factory;
 
 class ContentEncodingTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,17 +34,13 @@ class ContentEncodingTest extends \PHPUnit_Framework_TestCase
      */
     public function testEncoding(array $encodings, $accept, $encoding = '')
     {
-        $request = (new ServerRequest())->withHeader('Accept-Encoding', $accept);
+        $request = Factory::createServerRequest()->withHeader('Accept-Encoding', $accept);
 
         $response = (new Dispatcher([
             new ContentEncoding($encodings),
-
-            new CallableMiddleware(function ($request) {
-                $response = new Response();
-                $response->getBody()->write($request->getHeaderLine('Accept-Encoding'));
-
-                return $response;
-            }),
+            function ($request) {
+                echo $request->getHeaderLine('Accept-Encoding');
+            },
         ]))->dispatch($request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);

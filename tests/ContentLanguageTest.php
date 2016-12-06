@@ -4,9 +4,7 @@ namespace Middlewares\tests;
 
 use Middlewares\ContentLanguage;
 use Middlewares\Utils\Dispatcher;
-use Middlewares\Utils\CallableMiddleware;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\Response;
+use Middlewares\Utils\Factory;
 
 class ContentLanguageTest extends \PHPUnit_Framework_TestCase
 {
@@ -51,17 +49,13 @@ class ContentLanguageTest extends \PHPUnit_Framework_TestCase
      */
     public function testLanguages(array $languages, $accept, $language)
     {
-        $request = (new ServerRequest())->withHeader('Accept-Language', $accept);
+        $request = Factory::createServerRequest()->withHeader('Accept-Language', $accept);
 
         $response = (new Dispatcher([
             new ContentLanguage($languages),
-
-            new CallableMiddleware(function ($request) {
-                $response = new Response();
-                $response->getBody()->write($request->getHeaderLine('Accept-Language'));
-
-                return $response;
-            }),
+            function ($request) {
+                echo $request->getHeaderLine('Accept-Language');
+            },
         ]))->dispatch($request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
@@ -118,17 +112,13 @@ class ContentLanguageTest extends \PHPUnit_Framework_TestCase
      */
     public function testLanguagesPath(array $languages, $uri, $accept, $location, $language = null)
     {
-        $request = (new ServerRequest([], [], $uri))->withHeader('Accept-Language', $accept);
+        $request = Factory::createServerRequest([], 'GET', $uri)->withHeader('Accept-Language', $accept);
 
         $response = (new Dispatcher([
             (new ContentLanguage($languages))->usePath()->redirect(),
-
-            new CallableMiddleware(function ($request) {
-                $response = new Response();
-                $response->getBody()->write($request->getHeaderLine('Accept-Language'));
-
-                return $response;
-            }),
+            function ($request) {
+                echo $request->getHeaderLine('Accept-Language');
+            },
         ]))->dispatch($request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
