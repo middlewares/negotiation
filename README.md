@@ -51,6 +51,10 @@ Set the available formats to negotiate. By default uses [these](src/formats.php)
 
 The default format used if the negotiation does not return a valid format. By default is `html`
 
+#### `charsets(array $charsets)`
+
+Array with the available charsets, to negotiate with the `Accept-Charset` header. By default is `['UTF-8']`.
+
 #### `noSniff($nosniff = true)`
 
 Adds the `X-Content-Type-Options: nosniff` header, to mitigating [MIME confusión attacks.](https://blog.mozilla.org/security/2016/08/26/mitigating-mime-confusion-attacks-in-firefox/). `true` by default. To disable it: `noSniff(false)`.
@@ -78,7 +82,7 @@ $dispatcher = new Dispatcher([
 
 $response = $dispatcher->dispatch($request);
 
-echo $response->getHeaderLine('Content-Type'); //text/html
+echo $response->getHeaderLine('Content-Type'); //text/html; charset=UTF-8
 echo $response->getBody(); //<p>Hello world</p>
 ```
 

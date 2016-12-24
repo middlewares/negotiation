@@ -6,44 +6,54 @@ return [
     'html' => [
         'extension' => ['html', 'htm', 'php'],
         'mime-type' => ['text/html', 'application/xhtml+xml'],
+        'charset' => true,
     ],
     'txt' => [
         'extension' => ['txt'],
         'mime-type' => ['text/plain'],
+        'charset' => true,
     ],
     'css' => [
         'extension' => ['css'],
         'mime-type' => ['text/css'],
+        'charset' => true,
     ],
     'json' => [
         'extension' => ['json'],
         'mime-type' => ['application/json', 'text/json', 'application/x-json'],
+        'charset' => true,
     ],
     'jsonp' => [
         'extension' => ['jsonp'],
         'mime-type' => ['text/javascript', 'application/javascript', 'application/x-javascript'],
+        'charset' => true,
     ],
     'js' => [
         'extension' => ['js'],
         'mime-type' => ['text/javascript', 'application/javascript', 'application/x-javascript'],
+        'charset' => true,
     ],
 
     //xml
     'rdf' => [
         'extension' => ['rdf'],
         'mime-type' => ['application/rdf+xml'],
+        'charset' => true,
     ],
     'rss' => [
         'extension' => ['rss'],
         'mime-type' => ['application/rss+xml'],
+        'charset' => true,
     ],
     'atom' => [
         'extension' => ['atom'],
         'mime-type' => ['application/atom+xml'],
+        'charset' => true,
     ],
     'xml' => [
         'extension' => ['xml'],
         'mime-type' => ['text/xml', 'application/xml', 'application/x-xml'],
+        'charset' => true,
     ],
 
     //images

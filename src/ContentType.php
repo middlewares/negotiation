@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Negotiation\Negotiator;
+use Negotiation\CharsetNegotiator;
 
 class ContentType implements MiddlewareInterface
 {
@@ -21,6 +22,11 @@ class ContentType implements MiddlewareInterface
      * @var array Available formats with the mime types
      */
     private $formats;
+
+    /**
+     * @var array Available charsets
+     */
+    private $charsets = ['UTF-8'];
 
     /**
      * @var bool Include X-Content-Type-Options: nosniff
@@ -52,6 +58,20 @@ class ContentType implements MiddlewareInterface
     }
 
     /**
+     * Set the available charsets. The first value will be used as default
+     *
+     * @param array $charsets
+     *
+     * @return self
+     */
+    public function charsets(array $charsets)
+    {
+        $this->charsets = $charsets;
+
+        return $this;
+    }
+
+    /**
      * Configure the nosniff option.
      *
      * @param bool $nosniff
@@ -77,11 +97,22 @@ class ContentType implements MiddlewareInterface
     {
         $format = $this->detectFromExtension($request) ?: $this->detectFromHeader($request) ?: $this->default;
         $contentType = $this->formats[$format]['mime-type'][0];
+        $charset = $this->detectCharset($request) ?: current($this->charsets);
 
-        $response = $delegate->process($request->withHeader('Accept', $contentType));
+        $request = $request
+            ->withHeader('Accept', $contentType)
+            ->withHeader('Accept-Charset', $charset);
+
+        $response = $delegate->process($request);
 
         if (!$response->hasHeader('Content-Type')) {
-            $response = $response->withHeader('Content-Type', $contentType.'; charset=utf-8');
+            $needCharset = !empty($this->formats[$format]['charset']);
+
+            if ($needCharset) {
+                $contentType .= '; charset='.$charset;
+            }
+
+            $response = $response->withHeader('Content-Type', $contentType);
         }
 
         if ($this->nosniff && !$response->hasHeader('X-Content-Type-Options')) {
@@ -129,5 +160,17 @@ class ContentType implements MiddlewareInterface
                 }
             }
         }
+    }
+
+    /**
+     * Returns the charset accepted.
+     *
+     * @return null|string
+     */
+    private function detectCharset(ServerRequestInterface $request)
+    {
+        $accept = $request->getHeaderLine('Accept-Charset');
+
+        return $this->negotiateHeader($accept, new CharsetNegotiator(), $this->charsets);
     }
 }
