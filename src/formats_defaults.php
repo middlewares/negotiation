@@ -55,6 +55,11 @@ return [
         'mime-type' => ['text/xml', 'application/xml', 'application/x-xml'],
         'charset' => true,
     ],
+    'kml' => [
+        'extension' => ['kml'],
+        'mime-type' => ['application/vnd.google-earth.kml+xml'],
+        'charset' => true,
+    ],
 
     //images
     'bmp' => [

@@ -43,7 +43,6 @@ class ContentEncodingTest extends \PHPUnit_Framework_TestCase
             },
         ], $request);
 
-        $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals($encoding, (string) $response->getBody());
     }
 }

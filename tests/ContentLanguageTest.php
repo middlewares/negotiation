@@ -58,7 +58,6 @@ class ContentLanguageTest extends \PHPUnit_Framework_TestCase
             },
         ], $request);
 
-        $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals($language, (string) $response->getBody());
     }
 
@@ -121,7 +120,6 @@ class ContentLanguageTest extends \PHPUnit_Framework_TestCase
             },
         ], $request);
 
-        $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals($language, (string) $response->getBody());
 
         if ($language === null) {

@@ -36,6 +36,11 @@ class ContentTypeTest extends \PHPUnit_Framework_TestCase
                 'text/html, image/gif, image/jpeg, *; q=0.2, */*; q=0.2',
                 'text/html',
             ],
+            [
+                '/points.kml',
+                '',
+                'application/vnd.google-earth.kml+xml',
+            ],
         ];
     }
 
@@ -53,7 +58,6 @@ class ContentTypeTest extends \PHPUnit_Framework_TestCase
             },
         ], $request);
 
-        $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals($mime, (string) $response->getBody());
         $this->assertEquals($mime.'; charset=UTF-8', $response->getHeaderLine('Content-Type'));
         $this->assertEquals('nosniff', $response->getHeaderLine('X-Content-Type-Options'));
@@ -95,7 +99,6 @@ class ContentTypeTest extends \PHPUnit_Framework_TestCase
                 ->charsets($charsets),
         ], $request);
 
-        $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals($result, $response->getHeaderLine('Content-Type'));
     }
 }
