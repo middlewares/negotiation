@@ -33,7 +33,7 @@ composer require middlewares/negotiation
 $dispatcher = new Dispatcher([
     new Middlewares\ContentType(),
     new Middlewares\ContentLanguage(['en', 'gl', 'es']),
-	new Middlewares\ContentEncoding(['gzip', 'deflate']),
+    new Middlewares\ContentEncoding(['gzip', 'deflate']),
 ]);
 
 $response = $dispatcher->dispatch(new ServerRequest());
