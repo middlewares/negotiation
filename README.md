@@ -45,7 +45,7 @@ To detect the preferred mime type using the `Accept` header and the path extensi
 
 #### `__construct(array $formats = null)`
 
-Set the available formats to negotiate. By default uses [these](src/formats.php)
+Set the available formats to negotiate sorted by priority. By default uses [these](src/formats_defaults.php)
 
 #### `defaultFormat($format)`
 
