@@ -40,25 +40,19 @@ class ContentTypeTest extends \PHPUnit_Framework_TestCase
                 '/points.kml',
                 '',
                 'application/vnd.google-earth.kml+xml',
-            ],
-            [
-                '/format',
-                '*',
-                'application/json',
-                'json',
-            ],
+            ]
         ];
     }
 
     /**
      * @dataProvider formatsProvider
      */
-    public function testFormats($uri, $accept, $mime, $default = 'html')
+    public function testFormats($uri, $accept, $mime)
     {
         $request = Factory::createServerRequest([], 'GET', $uri)->withHeader('Accept', $accept);
 
         $response = Dispatcher::run([
-            (new ContentType())->defaultFormat($default),
+            new ContentType(),
             function ($request) {
                 echo $request->getHeaderLine('Accept');
             },
@@ -67,6 +61,38 @@ class ContentTypeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($mime, (string) $response->getBody());
         $this->assertEquals($mime.'; charset=UTF-8', $response->getHeaderLine('Content-Type'));
         $this->assertEquals('nosniff', $response->getHeaderLine('X-Content-Type-Options'));
+    }
+
+    public function testFormatNotFound()
+    {
+        $request = Factory::createServerRequest()->withHeader('Accept', 'text/xxx');
+
+        $response = Dispatcher::run([
+            (new ContentType())->useDefault(false)
+        ], $request);
+
+        $this->assertEquals(406, $response->getStatusCode());
+        $this->assertEquals('Not Acceptable', $response->getReasonPhrase());
+    }
+
+    public function testCustomFormats()
+    {
+        $formats = ContentType::getDefaultFormats();
+
+        $default = $formats['json'];
+        $formats = ['json' => $default] + $formats;
+
+        $request = Factory::createServerRequest()->withHeader('Accept', 'text/xxx');
+
+        $response = Dispatcher::run([
+            new ContentType($formats),
+            function ($request) {
+                echo $request->getHeaderLine('Accept');
+            },
+        ], $request);
+
+        $this->assertEquals('application/json', (string) $response->getBody());
+        $this->assertEquals('application/json; charset=UTF-8', $response->getHeaderLine('Content-Type'));
     }
 
     public function charsetProvider()

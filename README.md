@@ -47,9 +47,9 @@ To detect the preferred mime type using the `Accept` header and the path extensi
 
 Set the available formats to negotiate sorted by priority. By default uses [these](src/formats_defaults.php)
 
-#### `defaultFormat($format)`
+#### `useDefault($useDefault = true)`
 
-The default format used if the negotiation does not return a valid format. By default is `html`
+Whether use the default format (the first format provided) if the negotiation does not return a valid format. Set to `false` to disable the default format and return a `406` response. By default is `true`.
 
 #### `charsets(array $charsets)`
 

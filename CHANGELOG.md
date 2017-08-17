@@ -6,9 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## UNRELEASED
 
-### Changed
+### Added
 
-* The default format is always the first element in the formats list.
+* **ContentType:** New static function `ContentType::getDefaultFormats()` that returns the default formats used.
+
+* **ContentType:** New option `useDefault` option to enable/disable the default format. By default is enabled. If it's disabled, a 406 response is returned when no content-type is found.
+
+### Removed
+
+* **ContentType:** Removed the `defaultFormat` option and use always the first element in the formats list.
 
 ## [0.3.1] - 2017-05-18
 

@@ -2,6 +2,7 @@
 
 namespace Middlewares;
 
+use Middlewares\Utils\Factory;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
@@ -15,9 +16,9 @@ class ContentType implements MiddlewareInterface
     use Utils\NegotiationTrait;
 
     /**
-     * @var string Default format
+     * @var bool Whether use the first format as default
      */
-    private $default = 'html';
+    private $useDefault = true;
 
     /**
      * @var array Available formats with the mime types
@@ -35,32 +36,35 @@ class ContentType implements MiddlewareInterface
     private $nosniff = true;
 
     /**
+     * Return the default formats.
+     *
+     * @return array
+     */
+    public static function getDefaultFormats()
+    {
+        return require __DIR__.'/formats_defaults.php';
+    }
+
+    /**
      * Define de available formats.
      *
      * @param array|null $formats
      */
     public function __construct(array $formats = null)
     {
-        $this->formats = $formats ?: require __DIR__.'/formats_defaults.php';
+        $this->formats = $formats ?: static::getDefaultFormats();
     }
 
     /**
-     * Set the default format.
+     * Whether use the first format as default.
      *
-     * @param string $format
+     * @param bool $useDefault
      *
      * @return self
      */
-    public function defaultFormat($format)
+    public function useDefault($useDefault = true)
     {
-        if (!isset($this->formats[$format])) {
-            throw new InvalidArgumentException("The default format '{$format}' is not available");
-        }
-
-        //Move the default format to be the first element of the array
-        $default = $this->formats[$format];
-        unset($this->formats[$format]);
-        $this->formats = [$format => $default] + $this->formats;
+        $this->useDefault = (bool) $useDefault;
 
         return $this;
     }
@@ -103,7 +107,16 @@ class ContentType implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $format = $this->detectFromExtension($request) ?: $this->detectFromHeader($request) ?: key($this->formats);
+        $format = $this->detectFromExtension($request) ?: $this->detectFromHeader($request);
+
+        if ($format === null) {
+            if (!$this->useDefault) {
+                return Factory::createResponse(406);
+            }
+
+            $format = key($this->formats);
+        }
+
         $contentType = $this->formats[$format]['mime-type'][0];
         $charset = $this->detectCharset($request) ?: current($this->charsets);
 
