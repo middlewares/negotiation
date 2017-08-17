@@ -41,18 +41,24 @@ class ContentTypeTest extends \PHPUnit_Framework_TestCase
                 '',
                 'application/vnd.google-earth.kml+xml',
             ],
+            [
+                '/format',
+                '*',
+                'application/json',
+                'json',
+            ],
         ];
     }
 
     /**
      * @dataProvider formatsProvider
      */
-    public function testFormats($uri, $accept, $mime)
+    public function testFormats($uri, $accept, $mime, $default = 'html')
     {
         $request = Factory::createServerRequest([], 'GET', $uri)->withHeader('Accept', $accept);
 
         $response = Dispatcher::run([
-            new ContentType(),
+            (new ContentType())->defaultFormat($default),
             function ($request) {
                 echo $request->getHeaderLine('Accept');
             },

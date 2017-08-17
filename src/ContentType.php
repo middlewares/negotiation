@@ -8,6 +8,7 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Negotiation\Negotiator;
 use Negotiation\CharsetNegotiator;
+use InvalidArgumentException;
 
 class ContentType implements MiddlewareInterface
 {
@@ -52,7 +53,14 @@ class ContentType implements MiddlewareInterface
      */
     public function defaultFormat($format)
     {
-        $this->default = $format;
+        if (!isset($this->formats[$format])) {
+            throw new InvalidArgumentException("The default format '{$format}' is not available");
+        }
+
+        //Move the default format to be the first element of the array
+        $default = $this->formats[$format];
+        unset($this->formats[$format]);
+        $this->formats = [$format => $default] + $this->formats;
 
         return $this;
     }
@@ -95,7 +103,7 @@ class ContentType implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $format = $this->detectFromExtension($request) ?: $this->detectFromHeader($request) ?: $this->default;
+        $format = $this->detectFromExtension($request) ?: $this->detectFromHeader($request) ?: key($this->formats);
         $contentType = $this->formats[$format]['mime-type'][0];
         $charset = $this->detectCharset($request) ?: current($this->charsets);
 
