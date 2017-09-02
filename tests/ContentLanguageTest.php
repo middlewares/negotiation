@@ -2,10 +2,10 @@
 
 namespace Middlewares\tests;
 
-use PHPUnit\Framework\TestCase;
 use Middlewares\ContentLanguage;
 use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
+use PHPUnit\Framework\TestCase;
 
 class ContentLanguageTest extends TestCase
 {
@@ -47,6 +47,8 @@ class ContentLanguageTest extends TestCase
 
     /**
      * @dataProvider languagesProvider
+     * @param mixed $accept
+     * @param mixed $language
      */
     public function testLanguages(array $languages, $accept, $language)
     {
@@ -109,6 +111,10 @@ class ContentLanguageTest extends TestCase
 
     /**
      * @dataProvider languagesPathProvider
+     * @param mixed      $uri
+     * @param mixed      $accept
+     * @param mixed      $location
+     * @param null|mixed $language
      */
     public function testLanguagesPath(array $languages, $uri, $accept, $location, $language = null)
     {

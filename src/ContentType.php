@@ -2,14 +2,13 @@
 
 namespace Middlewares;
 
-use Middlewares\Utils\Factory;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Negotiation\Negotiator;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Middlewares\Utils\Factory;
 use Negotiation\CharsetNegotiator;
-use InvalidArgumentException;
+use Negotiation\Negotiator;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class ContentType implements MiddlewareInterface
 {

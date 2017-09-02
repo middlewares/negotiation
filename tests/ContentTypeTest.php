@@ -2,10 +2,10 @@
 
 namespace Middlewares\tests;
 
-use PHPUnit\Framework\TestCase;
 use Middlewares\ContentType;
 use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
+use PHPUnit\Framework\TestCase;
 
 class ContentTypeTest extends TestCase
 {
@@ -41,12 +41,15 @@ class ContentTypeTest extends TestCase
                 '/points.kml',
                 '',
                 'application/vnd.google-earth.kml+xml',
-            ]
+            ],
         ];
     }
 
     /**
      * @dataProvider formatsProvider
+     * @param mixed $uri
+     * @param mixed $accept
+     * @param mixed $mime
      */
     public function testFormats($uri, $accept, $mime)
     {
@@ -69,7 +72,7 @@ class ContentTypeTest extends TestCase
         $request = Factory::createServerRequest()->withHeader('Accept', 'text/xxx');
 
         $response = Dispatcher::run([
-            (new ContentType())->useDefault(false)
+            (new ContentType())->useDefault(false),
         ], $request);
 
         $this->assertEquals(406, $response->getStatusCode());
@@ -104,12 +107,12 @@ class ContentTypeTest extends TestCase
                 'application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8',
                 'ISO-8859-1, UTF-8; q=0.9',
                 'text/html; charset=UTF-8',
-            ],[
+            ], [
                 ['ISO-8859-1', 'UTF-8'],
                 'application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8',
                 'ISO-8859-1, UTF-8; q=0.9',
                 'text/html; charset=ISO-8859-1',
-            ],[
+            ], [
                 ['ISO-8859-1', 'UTF-8'],
                 'application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8',
                 'UTF-8, ISO-8859-1; q=0.9',
@@ -120,6 +123,10 @@ class ContentTypeTest extends TestCase
 
     /**
      * @dataProvider charsetProvider
+     * @param mixed $charsets
+     * @param mixed $accept
+     * @param mixed $acceptCharset
+     * @param mixed $result
      */
     public function testCharset($charsets, $accept, $acceptCharset, $result)
     {

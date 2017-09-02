@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     //text
     'html' => [
         'extension' => ['html', 'htm', 'php'],
