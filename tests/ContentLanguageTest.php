@@ -2,11 +2,12 @@
 
 namespace Middlewares\tests;
 
+use PHPUnit\Framework\TestCase;
 use Middlewares\ContentLanguage;
 use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
 
-class ContentLanguageTest extends \PHPUnit_Framework_TestCase
+class ContentLanguageTest extends TestCase
 {
     public function languagesProvider()
     {

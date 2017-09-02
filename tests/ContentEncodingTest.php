@@ -2,11 +2,12 @@
 
 namespace Middlewares\tests;
 
+use PHPUnit\Framework\TestCase;
 use Middlewares\ContentEncoding;
 use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
 
-class ContentEncodingTest extends \PHPUnit_Framework_TestCase
+class ContentEncodingTest extends TestCase
 {
     public function encodingsProvider()
     {

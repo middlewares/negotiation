@@ -2,11 +2,12 @@
 
 namespace Middlewares\tests;
 
+use PHPUnit\Framework\TestCase;
 use Middlewares\ContentType;
 use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
 
-class ContentTypeTest extends \PHPUnit_Framework_TestCase
+class ContentTypeTest extends TestCase
 {
     public function formatsProvider()
     {
