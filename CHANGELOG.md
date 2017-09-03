@@ -4,17 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## [UNRELEASED]
 
 ### Added
 
 * **ContentType:** New static function `ContentType::getDefaultFormats()` that returns the default formats used.
-
 * **ContentType:** New option `useDefault` option to enable/disable the default format. By default is enabled. If it's disabled, a 406 response is returned when no content-type is found.
 
 ### Removed
 
 * **ContentType:** Removed the `defaultFormat` option and use always the first element in the formats list.
+
+### Changed
+
+* Append `.dist` suffix to phpcs.xml and phpunit.xml files
+* Changed the configuration of phpcs and php_cs
+* Upgraded phpunit to the latest version and improved its config file
 
 ## [0.3.1] - 2017-05-18
 
@@ -56,6 +61,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 First version
 
+[UNRELEASED]: https://github.com/middlewares/negotiation/compare/v0.3.1...master
 [0.3.1]: https://github.com/middlewares/negotiation/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/middlewares/negotiation/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/middlewares/negotiation/compare/v0.1.0...v0.2.0
