@@ -2,8 +2,8 @@
 
 namespace Middlewares;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Negotiation\LanguageNegotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -69,12 +69,12 @@ class ContentLanguage implements MiddlewareInterface
     /**
      * Process a server request and return a response.
      *
-     * @param ServerRequestInterface $request
-     * @param DelegateInterface      $delegate
+     * @param ServerRequestInterface  $request
+     * @param RequestHandlerInterface $handler
      *
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler)
     {
         $uri = $request->getUri();
         $language = $this->detectFromPath($uri->getPath());
@@ -90,7 +90,7 @@ class ContentLanguage implements MiddlewareInterface
             }
         }
 
-        $response = $delegate->process($request->withHeader('Accept-Language', $language));
+        $response = $handler->handle($request->withHeader('Accept-Language', $language));
 
         if (!$response->hasHeader('Content-Language')) {
             return $response->withHeader('Content-Language', $language);
