@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Middlewares\Utils;
 
@@ -12,13 +13,9 @@ trait NegotiationTrait
     /**
      * Returns the best value of a header.
      *
-     * @param string             $accept     The header to negotiate
-     * @param AbstractNegotiator $negotiator
-     * @param array              $priorities
-     *
      * @return string|null
      */
-    private function negotiateHeader($accept, AbstractNegotiator $negotiator, array $priorities)
+    private function negotiateHeader(string $accept, AbstractNegotiator $negotiator, array $priorities)
     {
         if (empty($accept) || empty($priorities)) {
             return;

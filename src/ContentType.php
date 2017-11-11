@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Middlewares;
 
@@ -36,18 +37,14 @@ class ContentType implements MiddlewareInterface
 
     /**
      * Return the default formats.
-     *
-     * @return array
      */
-    public static function getDefaultFormats()
+    public static function getDefaultFormats(): array
     {
         return require __DIR__.'/formats_defaults.php';
     }
 
     /**
      * Define de available formats.
-     *
-     * @param array|null $formats
      */
     public function __construct(array $formats = null)
     {
@@ -56,12 +53,9 @@ class ContentType implements MiddlewareInterface
 
     /**
      * Whether use the first format as default.
-     *
-     * @param bool $useDefault
-     *
-     * @return self
+     * @param mixed $useDefault
      */
-    public function useDefault($useDefault = true)
+    public function useDefault($useDefault = true): self
     {
         $this->useDefault = (bool) $useDefault;
 
@@ -70,12 +64,8 @@ class ContentType implements MiddlewareInterface
 
     /**
      * Set the available charsets. The first value will be used as default
-     *
-     * @param array $charsets
-     *
-     * @return self
      */
-    public function charsets(array $charsets)
+    public function charsets(array $charsets): self
     {
         $this->charsets = $charsets;
 
@@ -84,12 +74,8 @@ class ContentType implements MiddlewareInterface
 
     /**
      * Configure the nosniff option.
-     *
-     * @param bool $nosniff
-     *
-     * @return self
      */
-    public function nosniff($nosniff = true)
+    public function nosniff(bool $nosniff = true): self
     {
         $this->nosniff = $nosniff;
 
@@ -98,13 +84,8 @@ class ContentType implements MiddlewareInterface
 
     /**
      * Process a server request and return a response.
-     *
-     * @param ServerRequestInterface  $request
-     * @param RequestHandlerInterface $handler
-     *
-     * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $format = $this->detectFromExtension($request) ?: $this->detectFromHeader($request);
 

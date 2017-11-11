@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Middlewares;
 
@@ -29,8 +30,6 @@ class ContentLanguage implements MiddlewareInterface
 
     /**
      * Define de available languages.
-     *
-     * @param array $languages
      */
     public function __construct(array $languages)
     {
@@ -39,12 +38,8 @@ class ContentLanguage implements MiddlewareInterface
 
     /**
      * Use the base path to detect the current language.
-     *
-     * @param bool $usePath
-     *
-     * @return self
      */
-    public function usePath($usePath = true)
+    public function usePath(bool $usePath = true): self
     {
         $this->usePath = $usePath;
 
@@ -54,12 +49,8 @@ class ContentLanguage implements MiddlewareInterface
     /**
      * Whether returns a 302 response to the new path.
      * Note: This only works if usePath is true.
-     *
-     * @param bool $redirect
-     *
-     * @return self
      */
-    public function redirect($redirect = true)
+    public function redirect(bool $redirect = true): self
     {
         $this->redirect = (bool) $redirect;
 
@@ -68,13 +59,8 @@ class ContentLanguage implements MiddlewareInterface
 
     /**
      * Process a server request and return a response.
-     *
-     * @param ServerRequestInterface  $request
-     * @param RequestHandlerInterface $handler
-     *
-     * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $uri = $request->getUri();
         $language = $this->detectFromPath($uri->getPath());
@@ -102,11 +88,9 @@ class ContentLanguage implements MiddlewareInterface
     /**
      * Returns the format using the file extension.
      *
-     * @param string $path
-     *
      * @return null|string
      */
-    private function detectFromPath($path)
+    private function detectFromPath(string $path)
     {
         if (!$this->usePath) {
             return;
