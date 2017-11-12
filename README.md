@@ -17,7 +17,7 @@ Middleware using [wildurand/Negotiation](https://github.com/willdurand/Negotiati
 
 * PHP >= 7.0
 * A [PSR-7](https://packagist.org/providers/psr/http-message-implementation) http mesage implementation ([Diactoros](https://github.com/zendframework/zend-diactoros), [Guzzle](https://github.com/guzzle/psr7), [Slim](https://github.com/slimphp/Slim), etc...)
-* A [PSR-15](https://github.com/http-interop/http-middleware) middleware dispatcher ([Middleman](https://github.com/mindplay-dk/middleman), etc...)
+* A [PSR-15 middleware dispatcher](https://github.com/middlewares/awesome-psr15-middlewares#dispatcher)
 
 ## Installation
 
@@ -92,7 +92,7 @@ To detect the preferred language using the `Accept-Language` header or the path 
 
 #### `__construct(array $languages)`
 
-Set the available languages to negotiate.
+Set the available languages to negotiate sorted by priority. The first value will be used as default if no other languages is choosen in the negotiation.
 
 ```php
 $request = (new ServerRequest())
