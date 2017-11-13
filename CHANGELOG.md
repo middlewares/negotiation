@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## [0.5.0] - 2017-11-13
 
 ### Removed
 
@@ -71,6 +71,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 First version
 
+[0.5.0]: https://github.com/middlewares/negotiation/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/middlewares/negotiation/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/middlewares/negotiation/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/middlewares/negotiation/compare/v0.2.0...v0.3.0
