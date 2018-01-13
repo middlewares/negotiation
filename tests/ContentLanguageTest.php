@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Middlewares\tests;
 
@@ -9,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContentLanguageTest extends TestCase
 {
-    public function languagesProvider()
+    public function languagesProvider(): array
     {
         return [
             [
@@ -30,7 +31,6 @@ class ContentLanguageTest extends TestCase
             [
                 [],
                 '',
-                null,
             ],
             [
                 ['es', 'en'],
@@ -42,17 +42,22 @@ class ContentLanguageTest extends TestCase
                 '',
                 'en',
             ],
+            [
+                [],
+            ],
         ];
     }
 
     /**
      * @dataProvider languagesProvider
-     * @param mixed $accept
-     * @param mixed $language
      */
-    public function testLanguages(array $languages, $accept, $language)
+    public function testLanguages(array $languages, string $accept = null, string $language = null)
     {
-        $request = Factory::createServerRequest()->withHeader('Accept-Language', $accept);
+        $request = Factory::createServerRequest();
+
+        if ($accept !== null) {
+            $request = $request->withHeader('Accept-Language', $accept);
+        }
 
         $response = Dispatcher::run([
             new ContentLanguage($languages),
@@ -64,7 +69,7 @@ class ContentLanguageTest extends TestCase
         $this->assertEquals($language, (string) $response->getBody());
     }
 
-    public function languagesPathProvider()
+    public function languagesPathProvider(): array
     {
         return [
             [
@@ -111,19 +116,22 @@ class ContentLanguageTest extends TestCase
 
     /**
      * @dataProvider languagesPathProvider
-     * @param mixed      $uri
-     * @param mixed      $accept
-     * @param mixed      $location
-     * @param null|mixed $language
      */
-    public function testLanguagesPath(array $languages, $uri, $accept, $location, $language = null)
-    {
+    public function testLanguagesPath(
+        array $languages,
+        string $uri,
+        string $accept,
+        string $location,
+        string $language = null
+    ) {
         $request = Factory::createServerRequest([], 'GET', $uri)->withHeader('Accept-Language', $accept);
 
         $response = Dispatcher::run([
             (new ContentLanguage($languages))->usePath()->redirect(),
             function ($request) {
-                echo $request->getHeaderLine('Accept-Language');
+                $language = $request->getHeaderLine('Accept-Language');
+                echo $language;
+                return Factory::createResponse()->withHeader('Content-Language', $language);
             },
         ], $request);
 

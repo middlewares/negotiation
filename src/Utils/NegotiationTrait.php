@@ -17,10 +17,6 @@ trait NegotiationTrait
      */
     private function negotiateHeader(string $accept, AbstractNegotiator $negotiator, array $priorities)
     {
-        if (empty($accept) || empty($priorities)) {
-            return;
-        }
-
         try {
             $best = $negotiator->getBest($accept, $priorities);
         } catch (\Exception $exception) {

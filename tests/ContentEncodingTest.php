@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Middlewares\tests;
 
@@ -9,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContentEncodingTest extends TestCase
 {
-    public function encodingsProvider()
+    public function encodingsProvider(): array
     {
         return [
             [
@@ -26,18 +27,22 @@ class ContentEncodingTest extends TestCase
             ], [
                 ['gzip'],
                 '',
+            ], [
+                ['gzip'],
             ],
         ];
     }
 
     /**
      * @dataProvider encodingsProvider
-     * @param mixed $accept
-     * @param mixed $encoding
      */
-    public function testEncoding(array $encodings, $accept, $encoding = '')
+    public function testEncoding(array $encodings, string $accept = null, string $encoding = '')
     {
-        $request = Factory::createServerRequest()->withHeader('Accept-Encoding', $accept);
+        $request = Factory::createServerRequest();
+
+        if ($accept !== null) {
+            $request = $request->withHeader('Accept-Encoding', $accept);
+        }
 
         $response = Dispatcher::run([
             new ContentEncoding($encodings),
