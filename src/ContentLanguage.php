@@ -3,11 +3,11 @@ declare(strict_types = 1);
 
 namespace Middlewares;
 
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Negotiation\LanguageNegotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class ContentLanguage implements MiddlewareInterface
 {
