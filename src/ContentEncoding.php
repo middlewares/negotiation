@@ -11,7 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ContentEncoding implements MiddlewareInterface
 {
-    use Utils\NegotiationTrait;
+    use NegotiationTrait;
 
     /**
      * @var array Available encodings

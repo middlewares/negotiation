@@ -13,7 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ContentType implements MiddlewareInterface
 {
-    use Utils\NegotiationTrait;
+    use NegotiationTrait;
 
     /**
      * @var bool Whether use the first format as default

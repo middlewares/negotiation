@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Middlewares\Utils;
+namespace Middlewares;
 
 use Negotiation\AbstractNegotiator;
 

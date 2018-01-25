@@ -11,7 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ContentLanguage implements MiddlewareInterface
 {
-    use Utils\NegotiationTrait;
+    use NegotiationTrait;
 
     /**
      * @var array Allowed languages
