@@ -38,7 +38,7 @@ class ContentEncodingTest extends TestCase
      */
     public function testEncoding(array $encodings, string $accept = null, string $encoding = '')
     {
-        $request = Factory::createServerRequest();
+        $request = Factory::createServerRequest('GET', '/');
 
         if ($accept !== null) {
             $request = $request->withHeader('Accept-Encoding', $accept);

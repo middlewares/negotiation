@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Middlewares;
 
+use Middlewares\Utils\Traits\HasResponseFactory;
 use Negotiation\LanguageNegotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -11,6 +12,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ContentLanguage implements MiddlewareInterface
 {
+    use HasResponseFactory;
     use NegotiationTrait;
 
     /**
@@ -71,7 +73,7 @@ class ContentLanguage implements MiddlewareInterface
             if ($this->redirect && $this->usePath) {
                 $location = $uri->withPath(str_replace('//', '/', $language.'/'.$uri->getPath()));
 
-                return Utils\Factory::createResponse(302)
+                return $this->createResponse(302)
                     ->withHeader('Location', (string) $location);
             }
         }

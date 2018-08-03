@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Middlewares;
 
-use Middlewares\Utils\Factory;
+use Middlewares\Utils\Traits\HasResponseFactory;
 use Negotiation\CharsetNegotiator;
 use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
@@ -13,6 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ContentType implements MiddlewareInterface
 {
+    use HasResponseFactory;
     use NegotiationTrait;
 
     /**
@@ -91,7 +92,7 @@ class ContentType implements MiddlewareInterface
 
         if ($format === null) {
             if (!$this->useDefault) {
-                return Factory::createResponse(406);
+                return $this->createResponse(406);
             }
 
             $format = key($this->formats);

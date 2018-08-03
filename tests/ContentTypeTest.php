@@ -63,7 +63,7 @@ class ContentTypeTest extends TestCase
      */
     public function testFormats(string $uri, string $acceptHeader, string $accept, string $contentType)
     {
-        $request = Factory::createServerRequest([], 'GET', $uri);
+        $request = Factory::createServerRequest('GET', $uri);
 
         if (!empty($acceptHeader)) {
             $request = $request->withHeader('Accept', $acceptHeader);
@@ -83,7 +83,7 @@ class ContentTypeTest extends TestCase
 
     public function testFormatNotFound()
     {
-        $request = Factory::createServerRequest()->withHeader('Accept', 'text/xxx');
+        $request = Factory::createServerRequest('GET', '/')->withHeader('Accept', 'text/xxx');
 
         $response = Dispatcher::run([
             (new ContentType())->useDefault(false),
@@ -100,7 +100,7 @@ class ContentTypeTest extends TestCase
         $default = $formats['json'];
         $formats = ['json' => $default] + $formats;
 
-        $request = Factory::createServerRequest()->withHeader('Accept', 'text/xxx');
+        $request = Factory::createServerRequest('GET', '/')->withHeader('Accept', 'text/xxx');
 
         $response = Dispatcher::run([
             new ContentType($formats),
@@ -115,7 +115,7 @@ class ContentTypeTest extends TestCase
 
     public function testDisableNosniff()
     {
-        $request = Factory::createServerRequest()->withHeader('Accept', 'text/json');
+        $request = Factory::createServerRequest('GET', '/')->withHeader('Accept', 'text/json');
 
         $response = Dispatcher::run([
             (new ContentType())->nosniff(false),
@@ -156,7 +156,7 @@ class ContentTypeTest extends TestCase
      */
     public function testCharset(array $charsets, string $accept, string $acceptCharset, string $result)
     {
-        $request = Factory::createServerRequest([], 'GET', '/')
+        $request = Factory::createServerRequest('GET', '/')
             ->withHeader('Accept-Charset', $acceptCharset)
             ->withHeader('Accept', $accept);
 

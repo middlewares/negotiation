@@ -53,7 +53,7 @@ class ContentLanguageTest extends TestCase
      */
     public function testLanguages(array $languages, string $accept = null, string $language = null)
     {
-        $request = Factory::createServerRequest();
+        $request = Factory::createServerRequest('GET', '/');
 
         if ($accept !== null) {
             $request = $request->withHeader('Accept-Language', $accept);
@@ -124,7 +124,7 @@ class ContentLanguageTest extends TestCase
         string $location,
         string $language = null
     ) {
-        $request = Factory::createServerRequest([], 'GET', $uri)->withHeader('Accept-Language', $accept);
+        $request = Factory::createServerRequest('GET', $uri)->withHeader('Accept-Language', $accept);
 
         $response = Dispatcher::run([
             (new ContentLanguage($languages))->usePath()->redirect(),
