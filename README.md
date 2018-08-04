@@ -59,6 +59,10 @@ Array with the available charsets, to negotiate with the `Accept-Charset` header
 
 Adds the `X-Content-Type-Options: nosniff` header, to mitigating [MIME confusión attacks.](https://blog.mozilla.org/security/2016/08/26/mitigating-mime-confusion-attacks-in-firefox/). `true` by default. To disable it: `noSniff(false)`.
 
+#### `responseFactory(Psr\Http\Message\ResponseFactoryInterface $responseFactory)`
+
+A PSR-17 factory to create `406` responses.
+
 ```php
 $request = (new ServerRequest())
     ->withHeader('Accept', 'application/xml;charset=UTF-8,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8');
@@ -158,6 +162,9 @@ echo $response->getBody(); //Hello world
 
 Used to return a `302` response redirecting to a path containing the language. This only works if `usePath` is enabled, so for example, if the request uri is `/welcome`, returns a redirection to `/en/welcome`.
 
+#### `responseFactory(Psr\Http\Message\ResponseFactoryInterface $responseFactory)`
+
+A PSR-17 factory to create redirect responses.
 
 ## ContentEncoding
 
