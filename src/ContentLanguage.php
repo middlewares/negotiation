@@ -88,7 +88,7 @@ class ContentLanguage implements MiddlewareInterface
     }
 
     /**
-     * Returns the format using the file extension.
+     * Returns the language from the first part of the path if it's in the allowed languages.
      *
      * @return null|string
      */
