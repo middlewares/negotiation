@@ -20,7 +20,7 @@ trait NegotiationTrait
         try {
             $best = $negotiator->getBest($accept, $priorities);
         } catch (\Exception $exception) {
-            return;
+            return null;
         }
 
         if ($best) {
