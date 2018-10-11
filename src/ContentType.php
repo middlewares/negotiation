@@ -134,7 +134,7 @@ class ContentType implements MiddlewareInterface
         $extension = strtolower(pathinfo($request->getUri()->getPath(), PATHINFO_EXTENSION));
 
         if (empty($extension)) {
-            return;
+            return null;
         }
 
         foreach ($this->formats as $format => $data) {

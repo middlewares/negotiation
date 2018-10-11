@@ -54,7 +54,7 @@ class ContentLanguage implements MiddlewareInterface
      */
     public function redirect(bool $redirect = true): self
     {
-        $this->redirect = (bool) $redirect;
+        $this->redirect = $redirect;
 
         return $this;
     }
@@ -78,10 +78,10 @@ class ContentLanguage implements MiddlewareInterface
             }
         }
 
-        $response = $handler->handle($request->withHeader('Accept-Language', $language));
+        $response = $handler->handle($request->withHeader('Accept-Language', (string) $language));
 
         if (!$response->hasHeader('Content-Language')) {
-            return $response->withHeader('Content-Language', $language);
+            return $response->withHeader('Content-Language', (string) $language);
         }
 
         return $response;
@@ -95,11 +95,11 @@ class ContentLanguage implements MiddlewareInterface
     private function detectFromPath(string $path)
     {
         if (!$this->usePath) {
-            return;
+            return null;
         }
 
         $dirs = explode('/', ltrim($path, '/'), 2);
-        $first = strtolower(array_shift($dirs));
+        $first = strtolower((string) array_shift($dirs));
 
         if (!empty($first) && in_array($first, $this->languages, true)) {
             return $first;
