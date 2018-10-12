@@ -4,6 +4,8 @@ declare(strict_types = 1);
 namespace Middlewares;
 
 use Middlewares\Utils\Traits\HasResponseFactory;
+use Middlewares\Utils\Factory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Negotiation\CharsetNegotiator;
 use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
@@ -47,9 +49,10 @@ class ContentType implements MiddlewareInterface
     /**
      * Define de available formats.
      */
-    public function __construct(array $formats = null)
+    public function __construct(array $formats = null, ResponseFactoryInterface $responseFactory = null)
     {
         $this->formats = $formats ?: static::getDefaultFormats();
+        $this->responseFactory = $responseFactory ?: Factory::getResponseFactory();
     }
 
     /**
