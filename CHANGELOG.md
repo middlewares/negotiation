@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Use `phpstan` as a dev dependency to detect bugs
 
+### Added
+
+- Added `responseFactory` option to `ContentLanguage::__construct`
+- Added `responseFactory` option to `ContentType::__construct`
+
 ## [1.1.0] - 2018-08-04
 
 ### Added

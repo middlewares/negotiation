@@ -4,6 +4,8 @@ declare(strict_types = 1);
 namespace Middlewares;
 
 use Middlewares\Utils\Traits\HasResponseFactory;
+use Middlewares\Utils\Factory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Negotiation\LanguageNegotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,9 +35,10 @@ class ContentLanguage implements MiddlewareInterface
     /**
      * Define de available languages.
      */
-    public function __construct(array $languages)
+    public function __construct(array $languages, ResponseFactoryInterface $responseFactory = null)
     {
         $this->languages = $languages;
+        $this->responseFactory = $responseFactory ?: Factory::getResponseFactory();
     }
 
     /**
