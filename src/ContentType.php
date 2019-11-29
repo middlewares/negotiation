@@ -86,7 +86,7 @@ class ContentType implements MiddlewareInterface
      */
     public function __construct(array $formats = null)
     {
-        $this->formats = static::getFormats($formats);
+        $this->formats = self::getFormats($formats);
         $this->defaultFormat = key($this->formats);
     }
 
