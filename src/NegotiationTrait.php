@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Middlewares;
 
+use Exception;
 use Negotiation\AbstractNegotiator;
 
 /**
@@ -12,19 +13,14 @@ trait NegotiationTrait
 {
     /**
      * Returns the best value of a header.
-     *
-     * @return string|null
      */
-    private function negotiateHeader(string $accept, AbstractNegotiator $negotiator, array $priorities)
+    private function negotiateHeader(string $accept, AbstractNegotiator $negotiator, array $priorities): ?string
     {
         try {
             $best = $negotiator->getBest($accept, $priorities);
-        } catch (\Exception $exception) {
+            return $best ? $best->getValue() : null;
+        } catch (Exception $exception) {
             return null;
-        }
-
-        if ($best) {
-            return $best->getValue();
         }
     }
 }

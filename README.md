@@ -30,163 +30,155 @@ composer require middlewares/negotiation
 ## Example
 
 ```php
-$dispatcher = new Dispatcher([
+Dispatcher::run([
     new Middlewares\ContentType(),
     new Middlewares\ContentLanguage(['en', 'gl', 'es']),
     new Middlewares\ContentEncoding(['gzip', 'deflate']),
 ]);
-
-$response = $dispatcher->dispatch(new ServerRequest());
 ```
 
 ## ContentType
 
-To detect the preferred mime type using the `Accept` header and the path extension and edit the header with this value. A `Content-Type` header is also added to the response if it's missing.
+To detect the preferred mime type using the `Accept` header and the file extension and edit the header with this value. A `Content-Type` header is also added to the response if it's missing.
 
-#### `__construct(array $formats = null)`
-
-Set the available formats to negotiate sorted by priority. By default uses [these](src/formats_defaults.php)
-
-#### `useDefault($useDefault = true)`
-
-Whether use the default format (the first format provided) if the negotiation does not return a valid format. Set to `false` to disable the default format and return a `406` response. By default is `true`.
-
-#### `charsets(array $charsets)`
-
-Array with the available charsets, to negotiate with the `Accept-Charset` header. By default is `['UTF-8']`.
-
-#### `noSniff($nosniff = true)`
-
-Adds the `X-Content-Type-Options: nosniff` header, to mitigating [MIME confusión attacks.](https://blog.mozilla.org/security/2016/08/26/mitigating-mime-confusion-attacks-in-firefox/). `true` by default. To disable it: `noSniff(false)`.
-
-#### `responseFactory(Psr\Http\Message\ResponseFactoryInterface $responseFactory)`
-
-A PSR-17 factory to create `406` responses.
+Define the formats to negotiate sorted by priority in the first argument. By default uses [these](src/formats_defaults.php)
 
 ```php
-$request = (new ServerRequest())
-    ->withHeader('Accept', 'application/xml;charset=UTF-8,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8');
+//Use the default types
+$negotiator = new Middlewares\ContentType();
 
-$dispatcher = new Dispatcher([
-    new Middlewares\ContentType(),
+//Use only few types
+$negotiator = new Middlewares\ContentType(['html', 'json']);
 
-    function ($request, $next) {
-        $type = $request->getHeaderLine('Accept');
-        $response = new Response();
-
-        if ($type === 'text/html') {
-            $response->getBody()->write('<p>Hello world</p>');
-        } elseif ($type === 'application/json') {
-            $response->getBody()->write(json_encode(['message' => 'Hello world']));
-        }
-
-        return $response;
-    }
+//Use only few types and configure some of them
+$negotiator = new Middlewares\ContentType([
+    'html',
+    'json',
+    'txt' => [
+        'extension' => ['txt'],
+        'mime-type' => ['text/plain'],
+        'charset' => true,
+    ]
 ]);
+```
 
-$response = $dispatcher->dispatch($request);
+### errorResponse
 
-echo $response->getHeaderLine('Content-Type'); //text/html; charset=UTF-8
-echo $response->getBody(); //<p>Hello world</p>
+If no format matches the negotiation, by default the middleware use the first value in the list of available formats (by default `text/html`). Use this option to return a `406` error. Optionally, you can provide a `Psr\Http\Message\ResponseFactoryInterface` that will be used to create the response. If it's not defined, [Middleware\Utils\Factory](https://github.com/middlewares/utils#factory) will be used to detect it automatically.
+
+```php
+$responseFactory = new MyOwnResponseFactory();
+
+//Use default html format (the first provided) if no valid format was detected (By default)
+$negotiator = new Middlewares\ContentType(['html', 'json']);
+
+//Return a 406 response if no valid format was detected
+$negotiator = (new Middlewares\ContentType(['html', 'json']))->errorResponse();
+
+//Return a 406 response using a specific responseFactory if no valid format was detected
+$negotiator = (new Middlewares\ContentType(['html', 'json']))->errorResponse($responseFactory);
+```
+
+### charsets
+
+The available charsets to negotiate with the `Accept-Charset` header. By default is `UTF-8`.
+
+```php
+$negotiator = (new Middlewares\ContentType())->charsets(['UTF-8', 'ISO-8859-1']);
+```
+
+### noSniff
+
+Adds the `X-Content-Type-Options: nosniff` header, to mitigating [MIME confusión attacks.](https://blog.mozilla.org/security/2016/08/26/mitigating-mime-confusion-attacks-in-firefox/). Enabled by default.
+
+```php
+//Disable noSniff header
+$negotiator = (new Middlewares\ContentType())->noSniff(false);
 ```
 
 ## ContentLanguage
 
 To detect the preferred language using the `Accept-Language` header or the path prefix and edit the header with this value. A `Content-Language` header is also added to the response if it's missing.
 
-#### `__construct(array $languages)`
-
-Set the available languages to negotiate sorted by priority. The first value will be used as default if no other languages is choosen in the negotiation.
+The first argument is an array with the available languages to negotiate sorted by priority. The first value will be used as default if no other languages is choosen in the negotiation.
 
 ```php
-$request = (new ServerRequest())
+$request = Factory::createServerRequest('GET', '/')
     ->withHeader('Accept-Language', 'gl-es, es;q=0.8, en;q=0.7');
 
-$dispatcher = new Dispatcher([
+Dispatcher::run([
     new Middlewares\ContentLanguage(['es', 'en']),
 
-    function ($request, $next) {
+    function ($request) {
         $language = $request->getHeaderLine('Accept-Language');
-        $response = new Response();
 
-        if ($language === 'es') {
-            $response->getBody()->write('Hola mundo');
-        } else {
-            $response->getBody()->write('Hello world');
+        switch ($language) {
+            case 'es':
+                return 'Hola mundo';
+            case 'en':
+                return 'Hello world';
         }
-
-        return $response;
     }
-]);
-
-$response = $dispatcher->dispatch($request);
-
-echo $response->getHeaderLine('Content-Language'); //es
-echo $response->getBody(); //Hola mundo
+], $request);
 ```
 
-#### `usePath()`
+### usePath
 
-To use the base path to detect the language. This is useful if you have different paths for each language, for example `/gl/foo` and `/en/foo`. 
+By enabling this option, the base path will be used to detect the language. This is useful if you have different paths for each language, for example `/gl/foo` and `/en/foo`. 
 
 Note: the language in the path has preference over the `Accept-Language` header.
 
 ```php
-$request = (new ServerRequest())->withUri(new Uri('/en/hello-world'));
+$request = Factory::createServerRequest('GET', '/en/hello-world');
 
-$dispatcher = new Dispatcher([
-    (new Middlewares\ContentLanguage(['es', 'en']))
-        ->usePath(),
+Dispatcher::run([
+    (new Middlewares\ContentLanguage(['es', 'en']))->usePath(),
 
-    function ($request, $next) {
+    function ($request) {
         $language = $request->getHeaderLine('Accept-Language');
-        $response = new Response();
 
-        if ($language === 'es') {
-            $response->getBody()->write('Hola mundo');
-        } else {
-            $response->getBody()->write('Hello world');
+        switch ($language) {
+            case 'es':
+                return 'Hola mundo';
+            case 'en':
+                return 'Hello world';
         }
-
-        return $response;
     }
-]);
-
-$response = $dispatcher->dispatch($request);
-
-echo $response->getHeaderLine('Content-Language'); //en
-echo $response->getBody(); //Hello world
+], $request);
 ```
 
-#### `redirect()`
+### redirect
 
-Used to return a `302` response redirecting to a path containing the language. This only works if `usePath` is enabled, so for example, if the request uri is `/welcome`, returns a redirection to `/en/welcome`.
+Used to return a `302` responses redirecting to the path containing the language. This only works if `usePath` is enabled, so for example, if the request uri is `/welcome`, returns a redirection to `/en/welcome`.
 
-#### `responseFactory(Psr\Http\Message\ResponseFactoryInterface $responseFactory)`
+```php
+$responseFactory = new MyOwnResponseFactory();
 
-A PSR-17 factory to create redirect responses.
+//Use not only the Accept-Language header but also the path prefix to detect the language
+$negotiator = (new Middlewares\ContentLanguage(['es', 'en']))->usePath();
+
+//Returns a redirection with the language in the path if it's missing
+$negotiator = (new Middlewares\ContentLanguage(['es', 'en']))->usePath()->redirect();
+
+//Returns a redirection using a specific response factory
+$negotiator = (new Middlewares\ContentLanguage(['es', 'en']))->usePath()->redirect($responseFactory);
+```
 
 ## ContentEncoding
 
 To detect the preferred encoding type using the `Accept-Encoding` header and edit the header with this value.
 
-#### `__construct(array $encodings)`
-
-Set the available encodings to negotiate.
-
 ```php
-$request = (new ServerRequest())
+$request = Factory::createServerRequest('GET', '/')
     ->withHeader('Accept-Encoding', 'gzip,deflate');
 
-$dispatcher = new Dispatcher([
+Dispatcher::run([
     new Middlewares\ContentEncoding(['gzip']),
 
     function ($request, $next) {
         echo $request->getHeaderLine('Accept-Encoding'); //gzip
     }
-]);
-
-$response = $dispatcher->dispatch($request);
+], $request);
 ```
 
 ---

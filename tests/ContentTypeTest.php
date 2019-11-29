@@ -86,7 +86,7 @@ class ContentTypeTest extends TestCase
         $request = Factory::createServerRequest('GET', '/')->withHeader('Accept', 'text/xxx');
 
         $response = Dispatcher::run([
-            (new ContentType())->useDefault(false),
+            (new ContentType())->errorResponse(),
         ], $request);
 
         $this->assertEquals(406, $response->getStatusCode());
@@ -95,15 +95,10 @@ class ContentTypeTest extends TestCase
 
     public function testCustomFormats()
     {
-        $formats = ContentType::getDefaultFormats();
-
-        $default = $formats['json'];
-        $formats = ['json' => $default] + $formats;
-
         $request = Factory::createServerRequest('GET', '/')->withHeader('Accept', 'text/xxx');
 
         $response = Dispatcher::run([
-            new ContentType($formats),
+            new ContentType(['json', 'html']),
             function ($request) {
                 echo $request->getHeaderLine('Accept');
             },

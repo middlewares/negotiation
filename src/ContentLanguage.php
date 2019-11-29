@@ -3,10 +3,9 @@ declare(strict_types = 1);
 
 namespace Middlewares;
 
-use Middlewares\Utils\Traits\HasResponseFactory;
 use Middlewares\Utils\Factory;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Negotiation\LanguageNegotiator;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -14,7 +13,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ContentLanguage implements MiddlewareInterface
 {
-    use HasResponseFactory;
     use NegotiationTrait;
 
     /**
@@ -28,17 +26,16 @@ class ContentLanguage implements MiddlewareInterface
     private $usePath = false;
 
     /**
-     * @var bool Returns a redirect response or not
+     * @var ResponseFactoryInterface|null
      */
-    private $redirect = false;
+    private $responseFactory;
 
     /**
      * Define de available languages.
      */
-    public function __construct(array $languages, ResponseFactoryInterface $responseFactory = null)
+    public function __construct(array $languages)
     {
         $this->languages = $languages;
-        $this->responseFactory = $responseFactory ?: Factory::getResponseFactory();
     }
 
     /**
@@ -55,9 +52,9 @@ class ContentLanguage implements MiddlewareInterface
      * Whether returns a 302 response to the new path.
      * Note: This only works if usePath is true.
      */
-    public function redirect(bool $redirect = true): self
+    public function redirect(ResponseFactoryInterface $responseFactory = null): self
     {
-        $this->redirect = $redirect;
+        $this->responseFactory = $responseFactory ?: Factory::getResponseFactory();
 
         return $this;
     }
@@ -73,10 +70,10 @@ class ContentLanguage implements MiddlewareInterface
         if ($language === null) {
             $language = $this->detectFromHeader($request);
 
-            if ($this->redirect && $this->usePath) {
+            if ($this->responseFactory && $this->usePath) {
                 $location = $uri->withPath(str_replace('//', '/', $language.'/'.$uri->getPath()));
 
-                return $this->createResponse(302)
+                return $this->responseFactory->createResponse(302)
                     ->withHeader('Location', (string) $location);
             }
         }
@@ -92,10 +89,8 @@ class ContentLanguage implements MiddlewareInterface
 
     /**
      * Returns the language from the first part of the path if it's in the allowed languages.
-     *
-     * @return null|string
      */
-    private function detectFromPath(string $path)
+    private function detectFromPath(string $path): ?string
     {
         if (!$this->usePath) {
             return null;
@@ -107,20 +102,20 @@ class ContentLanguage implements MiddlewareInterface
         if (!empty($first) && in_array($first, $this->languages, true)) {
             return $first;
         }
+
+        return null;
     }
 
     /**
      * Returns the format using the Accept-Language header.
-     *
-     * @return null|string
      */
-    private function detectFromHeader(ServerRequestInterface $request)
+    private function detectFromHeader(ServerRequestInterface $request): ?string
     {
         $accept = $request->getHeaderLine('Accept-Language');
         $language = $this->negotiateHeader($accept, new LanguageNegotiator(), $this->languages);
 
         if (empty($language)) {
-            return isset($this->languages[0]) ? $this->languages[0] : '';
+            return isset($this->languages[0]) ? $this->languages[0] : null;
         }
 
         return $language;
