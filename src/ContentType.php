@@ -3,11 +3,11 @@ declare(strict_types = 1);
 
 namespace Middlewares;
 
-use Middlewares\Utils\Traits\HasResponseFactory;
+use InvalidArgumentException;
 use Middlewares\Utils\Factory;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Negotiation\CharsetNegotiator;
 use Negotiation\Negotiator;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -15,18 +15,17 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ContentType implements MiddlewareInterface
 {
-    use HasResponseFactory;
     use NegotiationTrait;
-
-    /**
-     * @var bool Whether use the first format as default
-     */
-    private $useDefault = true;
 
     /**
      * @var array Available formats with the mime types
      */
     private $formats;
+
+    /**
+     * @var string
+     */
+    private $defaultFormat;
 
     /**
      * @var array Available charsets
@@ -39,6 +38,11 @@ class ContentType implements MiddlewareInterface
     private $nosniff = true;
 
     /**
+     * @var ResponseFactoryInterface|null
+     */
+    private $responseFactory;
+
+    /**
      * Return the default formats.
      */
     public static function getDefaultFormats(): array
@@ -47,21 +51,51 @@ class ContentType implements MiddlewareInterface
     }
 
     /**
-     * Define de available formats.
+     * Return the default formats.
      */
-    public function __construct(array $formats = null, ResponseFactoryInterface $responseFactory = null)
+    private static function getFormats(array $formats = null): array
     {
-        $this->formats = $formats ?: static::getDefaultFormats();
-        $this->responseFactory = $responseFactory ?: Factory::getResponseFactory();
+        $defaults = static::getDefaultFormats();
+
+        if (empty($formats)) {
+            return $defaults;
+        }
+
+        $results = [];
+
+        foreach ($formats as $name => $config) {
+            if (is_array($config)) {
+                $results[$name] = $config;
+                continue;
+            }
+
+            if (!isset($defaults[$config])) {
+                throw new InvalidArgumentException(
+                    sprintf('Invalid format name %s', $config)
+                );
+            }
+
+            $results[$config] = $defaults[$config];
+        }
+
+        return $results;
     }
 
     /**
-     * Whether use the first format as default.
-     * @param mixed $useDefault
+     * Define de available formats.
      */
-    public function useDefault($useDefault = true): self
+    public function __construct(array $formats = null)
     {
-        $this->useDefault = (bool) $useDefault;
+        $this->formats = static::getFormats($formats);
+        $this->defaultFormat = key($this->formats);
+    }
+
+    /**
+     * Return an error response (406) if not format has been found
+     */
+    public function errorResponse(ResponseFactoryInterface $responseFactory = null): self
+    {
+        $this->responseFactory = $responseFactory ?: Factory::getResponseFactory();
 
         return $this;
     }
@@ -94,11 +128,11 @@ class ContentType implements MiddlewareInterface
         $format = $this->detectFromExtension($request) ?: $this->detectFromHeader($request);
 
         if ($format === null) {
-            if (!$this->useDefault) {
-                return $this->createResponse(406);
+            if ($this->responseFactory) {
+                return $this->responseFactory->createResponse(406);
             }
 
-            $format = key($this->formats);
+            $format = $this->defaultFormat;
         }
 
         $contentType = $this->formats[$format]['mime-type'][0];
@@ -129,10 +163,8 @@ class ContentType implements MiddlewareInterface
 
     /**
      * Returns the format using the file extension.
-     *
-     * @return null|string
      */
-    private function detectFromExtension(ServerRequestInterface $request)
+    private function detectFromExtension(ServerRequestInterface $request): ?string
     {
         $extension = strtolower(pathinfo($request->getUri()->getPath(), PATHINFO_EXTENSION));
 
@@ -145,14 +177,14 @@ class ContentType implements MiddlewareInterface
                 return $format;
             }
         }
+
+        return null;
     }
 
     /**
      * Returns the format using the Accept header.
-     *
-     * @return null|string
      */
-    private function detectFromHeader(ServerRequestInterface $request)
+    private function detectFromHeader(ServerRequestInterface $request): ?string
     {
         $headers = call_user_func_array('array_merge', array_column($this->formats, 'mime-type'));
         $accept = $request->getHeaderLine('Accept');
@@ -165,14 +197,14 @@ class ContentType implements MiddlewareInterface
                 }
             }
         }
+
+        return null;
     }
 
     /**
      * Returns the charset accepted.
-     *
-     * @return null|string
      */
-    private function detectCharset(ServerRequestInterface $request)
+    private function detectCharset(ServerRequestInterface $request): ?string
     {
         $accept = $request->getHeaderLine('Accept-Charset');
 
