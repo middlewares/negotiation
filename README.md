@@ -174,7 +174,7 @@ $request = Factory::createServerRequest('GET', '/')
 Dispatcher::run([
     new Middlewares\ContentEncoding(['gzip']),
 
-    function ($request, $next) {
+    function ($request) {
         echo $request->getHeaderLine('Accept-Encoding'); //gzip
     }
 ], $request);
