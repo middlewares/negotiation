@@ -162,4 +162,34 @@ class ContentTypeTest extends TestCase
 
         $this->assertEquals($result, $response->getHeaderLine('Content-Type'));
     }
+
+    public function testMissingHeader()
+    {
+        $request = Factory::createServerRequest('GET', '/');
+
+        $response = Dispatcher::run([
+            (new ContentType(['json', 'html']))->errorResponse(),
+            function ($request) {
+                echo $request->getHeaderLine('Accept');
+            },
+        ], $request);
+
+        $this->assertEquals('application/json', (string) $response->getBody());
+        $this->assertEquals('application/json; charset=UTF-8', $response->getHeaderLine('Content-Type'));
+    }
+
+    public function testNotMissingHeader()
+    {
+        $request = Factory::createServerRequest('GET', '/')->withHeader('Accept', 'image/*');
+
+        $response = Dispatcher::run([
+            (new ContentType(['json', 'html']))->errorResponse(),
+            function ($request) {
+                echo $request->getHeaderLine('Accept');
+            },
+        ], $request);
+
+        $this->assertEquals('', $response->getHeaderLine('Content-Type'));
+        $this->assertEquals(406, $response->getStatusCode());
+    }
 }
