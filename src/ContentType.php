@@ -186,6 +186,9 @@ class ContentType implements MiddlewareInterface
      */
     private function detectFromHeader(ServerRequestInterface $request): ?string
     {
+        if (!$request->hasHeader('Accept')) {
+            return $this->defaultFormat;
+        }
         $headers = call_user_func_array('array_merge', array_column($this->formats, 'mime-type'));
         $accept = $request->getHeaderLine('Accept');
         $mime = $this->negotiateHeader($accept, new Negotiator(), $headers);
