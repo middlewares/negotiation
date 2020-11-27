@@ -19,8 +19,8 @@
         "issues": "https://github.com/middlewares/negotiation/issues"
     },
     "require": {
-        "php": "^7.2",
-        "willdurand/negotiation": "^2.1",
+        "php": "^7.2 || ^8.0",
+        "willdurand/negotiation": "^3.0",
         "middlewares/utils": "^3.0",
         "psr/http-server-middleware": "^1.0"
     },
