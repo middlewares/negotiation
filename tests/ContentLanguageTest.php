@@ -51,7 +51,7 @@ class ContentLanguageTest extends TestCase
     /**
      * @dataProvider languagesProvider
      */
-    public function testLanguages(array $languages, string $accept = null, string $language = null)
+    public function testLanguages(array $languages, string $accept = null, string $language = null): void
     {
         $request = Factory::createServerRequest('GET', '/');
 
@@ -66,7 +66,7 @@ class ContentLanguageTest extends TestCase
             },
         ], $request);
 
-        $this->assertEquals($language, (string) $response->getBody());
+        self::assertEquals($language, (string) $response->getBody());
     }
 
     public function languagesPathProvider(): array
@@ -123,7 +123,7 @@ class ContentLanguageTest extends TestCase
         string $accept,
         string $location,
         string $language = null
-    ) {
+    ): void {
         $request = Factory::createServerRequest('GET', $uri)->withHeader('Accept-Language', $accept);
 
         $response = Dispatcher::run([
@@ -135,14 +135,14 @@ class ContentLanguageTest extends TestCase
             },
         ], $request);
 
-        $this->assertEquals($language, (string) $response->getBody());
+        self::assertEquals($language, (string) $response->getBody());
 
         if ($language === null) {
-            $this->assertEquals(302, $response->getStatusCode());
-            $this->assertEquals($location, $response->getHeaderLine('Location'));
+            self::assertEquals(302, $response->getStatusCode());
+            self::assertEquals($location, $response->getHeaderLine('Location'));
         } else {
-            $this->assertEquals(200, $response->getStatusCode());
-            $this->assertEmpty($response->getHeaderLine('Location'));
+            self::assertEquals(200, $response->getStatusCode());
+            self::assertEmpty($response->getHeaderLine('Location'));
         }
     }
 }

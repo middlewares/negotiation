@@ -61,7 +61,7 @@ class ContentTypeTest extends TestCase
     /**
      * @dataProvider formatsProvider
      */
-    public function testFormats(string $uri, string $acceptHeader, string $accept, string $contentType)
+    public function testFormats(string $uri, string $acceptHeader, string $accept, string $contentType): void
     {
         $request = Factory::createServerRequest('GET', $uri);
 
@@ -76,12 +76,12 @@ class ContentTypeTest extends TestCase
             },
         ], $request);
 
-        $this->assertEquals($accept, (string) $response->getBody());
-        $this->assertEquals($contentType, $response->getHeaderLine('Content-Type'));
-        $this->assertEquals('nosniff', $response->getHeaderLine('X-Content-Type-Options'));
+        self::assertEquals($accept, (string) $response->getBody());
+        self::assertEquals($contentType, $response->getHeaderLine('Content-Type'));
+        self::assertEquals('nosniff', $response->getHeaderLine('X-Content-Type-Options'));
     }
 
-    public function testFormatNotFound()
+    public function testFormatNotFound(): void
     {
         $request = Factory::createServerRequest('GET', '/')->withHeader('Accept', 'text/xxx');
 
@@ -89,11 +89,11 @@ class ContentTypeTest extends TestCase
             (new ContentType())->errorResponse(),
         ], $request);
 
-        $this->assertEquals(406, $response->getStatusCode());
-        $this->assertEquals('Not Acceptable', $response->getReasonPhrase());
+        self::assertEquals(406, $response->getStatusCode());
+        self::assertEquals('Not Acceptable', $response->getReasonPhrase());
     }
 
-    public function testCustomFormats()
+    public function testCustomFormats(): void
     {
         $request = Factory::createServerRequest('GET', '/')->withHeader('Accept', 'text/xxx');
 
@@ -104,11 +104,11 @@ class ContentTypeTest extends TestCase
             },
         ], $request);
 
-        $this->assertEquals('application/json', (string) $response->getBody());
-        $this->assertEquals('application/json; charset=UTF-8', $response->getHeaderLine('Content-Type'));
+        self::assertEquals('application/json', (string) $response->getBody());
+        self::assertEquals('application/json; charset=UTF-8', $response->getHeaderLine('Content-Type'));
     }
 
-    public function testDisableNosniff()
+    public function testDisableNosniff(): void
     {
         $request = Factory::createServerRequest('GET', '/')->withHeader('Accept', 'text/json');
 
@@ -119,9 +119,9 @@ class ContentTypeTest extends TestCase
             },
         ], $request);
 
-        $this->assertEquals('application/json', (string) $response->getBody());
-        $this->assertEquals('application/json; charset=UTF-8', $response->getHeaderLine('Content-Type'));
-        $this->assertFalse($response->hasHeader('X-Content-Type-Options'));
+        self::assertEquals('application/json', (string) $response->getBody());
+        self::assertEquals('application/json; charset=UTF-8', $response->getHeaderLine('Content-Type'));
+        self::assertFalse($response->hasHeader('X-Content-Type-Options'));
     }
 
     public function charsetProvider(): array
@@ -149,7 +149,7 @@ class ContentTypeTest extends TestCase
     /**
      * @dataProvider charsetProvider
      */
-    public function testCharset(array $charsets, string $accept, string $acceptCharset, string $result)
+    public function testCharset(array $charsets, string $accept, string $acceptCharset, string $result): void
     {
         $request = Factory::createServerRequest('GET', '/')
             ->withHeader('Accept-Charset', $acceptCharset)
@@ -160,10 +160,10 @@ class ContentTypeTest extends TestCase
                 ->charsets($charsets),
         ], $request);
 
-        $this->assertEquals($result, $response->getHeaderLine('Content-Type'));
+        self::assertEquals($result, $response->getHeaderLine('Content-Type'));
     }
 
-    public function testMissingHeader()
+    public function testMissingHeader(): void
     {
         $request = Factory::createServerRequest('GET', '/');
 
@@ -174,11 +174,11 @@ class ContentTypeTest extends TestCase
             },
         ], $request);
 
-        $this->assertEquals('application/json', (string) $response->getBody());
-        $this->assertEquals('application/json; charset=UTF-8', $response->getHeaderLine('Content-Type'));
+        self::assertEquals('application/json', (string) $response->getBody());
+        self::assertEquals('application/json; charset=UTF-8', $response->getHeaderLine('Content-Type'));
     }
 
-    public function testNotMissingHeader()
+    public function testNotMissingHeader(): void
     {
         $request = Factory::createServerRequest('GET', '/')->withHeader('Accept', 'image/*');
 
@@ -189,7 +189,7 @@ class ContentTypeTest extends TestCase
             },
         ], $request);
 
-        $this->assertEquals('', $response->getHeaderLine('Content-Type'));
-        $this->assertEquals(406, $response->getStatusCode());
+        self::assertEquals('', $response->getHeaderLine('Content-Type'));
+        self::assertEquals(406, $response->getStatusCode());
     }
 }

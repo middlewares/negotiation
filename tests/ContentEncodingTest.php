@@ -36,7 +36,7 @@ class ContentEncodingTest extends TestCase
     /**
      * @dataProvider encodingsProvider
      */
-    public function testEncoding(array $encodings, string $accept = null, string $encoding = '')
+    public function testEncoding(array $encodings, string $accept = null, string $encoding = ''): void
     {
         $request = Factory::createServerRequest('GET', '/');
 
@@ -51,6 +51,6 @@ class ContentEncodingTest extends TestCase
             },
         ], $request);
 
-        $this->assertEquals($encoding, (string) $response->getBody());
+        self::assertEquals($encoding, (string) $response->getBody());
     }
 }

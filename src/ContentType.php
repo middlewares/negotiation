@@ -18,7 +18,7 @@ class ContentType implements MiddlewareInterface
     use NegotiationTrait;
 
     /**
-     * @var array Available formats with the mime types
+     * @var array<string, array> Available formats with the mime types
      */
     private $formats;
 
@@ -44,6 +44,7 @@ class ContentType implements MiddlewareInterface
 
     /**
      * Return the default formats.
+     * @return array<string, array>
      */
     public static function getDefaultFormats(): array
     {
@@ -52,6 +53,7 @@ class ContentType implements MiddlewareInterface
 
     /**
      * Return the default formats.
+     * @return array<string, array>
      */
     private static function getFormats(array $formats = null): array
     {
@@ -87,7 +89,9 @@ class ContentType implements MiddlewareInterface
     public function __construct(array $formats = null)
     {
         $this->formats = self::getFormats($formats);
-        $this->defaultFormat = key($this->formats);
+        $defaultFormat = key($this->formats);
+        assert($defaultFormat !== null);
+        $this->defaultFormat = $defaultFormat;
     }
 
     /**

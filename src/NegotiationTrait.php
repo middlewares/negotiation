@@ -5,6 +5,7 @@ namespace Middlewares;
 
 use Exception;
 use Negotiation\AbstractNegotiator;
+use Negotiation\BaseAccept;
 
 /**
  * Common functions used by all negotiation middlewares.
@@ -18,7 +19,7 @@ trait NegotiationTrait
     {
         try {
             $best = $negotiator->getBest($accept, $priorities);
-            return $best ? $best->getValue() : null;
+            return $best instanceof BaseAccept ? $best->getValue() : null;
         } catch (Exception $exception) {
             return null;
         }
