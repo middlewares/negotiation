@@ -2,8 +2,7 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE)
-[![Build Status][ico-travis]][link-travis]
-[![Quality Score][ico-scrutinizer]][link-scrutinizer]
+![Testing][ico-ga]
 [![Total Downloads][ico-downloads]][link-downloads]
 
 Middleware using [wildurand/Negotiation](https://github.com/willdurand/Negotiation) to implement content negotiation. Contains the following components:
@@ -188,11 +187,9 @@ The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
 
 [ico-version]: https://img.shields.io/packagist/v/middlewares/negotiation.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/middlewares/negotiation/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/g/middlewares/negotiation.svg?style=flat-square
+[ico-ga]: https://github.com/middlewares/negotiation/workflows/testing/badge.svg
 [ico-downloads]: https://img.shields.io/packagist/dt/middlewares/negotiation.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/middlewares/negotiation
-[link-travis]: https://travis-ci.org/middlewares/negotiation
 [link-scrutinizer]: https://scrutinizer-ci.com/g/middlewares/negotiation
 [link-downloads]: https://packagist.org/packages/middlewares/negotiation
