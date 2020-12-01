@@ -20,7 +20,7 @@
     },
     "require": {
         "php": "^7.2 || ^8.0",
-        "willdurand/negotiation": "^2.1",
+        "willdurand/negotiation": "^3.0",
         "middlewares/utils": "^3.0",
         "psr/http-server-middleware": "^1.0"
     },
