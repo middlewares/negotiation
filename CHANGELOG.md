@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.2] - 2020-12-02
+### Added
+- Support for PHP 8
+
 ## [2.0.1] - 2020-03-07
 ### Fixed
 - If no Accept header field is present, returns the default format instead a `406` response, according to the specs [#6], [#8]
@@ -90,6 +94,7 @@ First version
 [#6]: https://github.com/middlewares/negotiation/issues/6
 [#8]: https://github.com/middlewares/negotiation/issues/8
 
+[2.0.2]: https://github.com/middlewares/negotiation/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/middlewares/negotiation/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/middlewares/negotiation/compare/v1.1.0...v2.0.0
 [1.1.0]: https://github.com/middlewares/negotiation/compare/v1.0.0...v1.1.0
