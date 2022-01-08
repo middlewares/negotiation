@@ -94,6 +94,10 @@ Adds the `X-Content-Type-Options: nosniff` header, to mitigating [MIME confusió
 $negotiator = (new Middlewares\ContentType())->noSniff(false);
 ```
 
+### attribute
+
+To store the format name (`json`, `html`, `css` etc) in an attribute of the `ServerRequest`.
+
 ## ContentLanguage
 
 To detect the preferred language using the `Accept-Language` header or the path prefix and edit the header with this value. A `Content-Language` header is also added to the response if it's missing.

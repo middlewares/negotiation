@@ -23,6 +23,11 @@ class ContentType implements MiddlewareInterface
     private $formats;
 
     /**
+     * @var string Attribute name to store the format
+     */
+    private $attribute;
+
+    /**
      * @var string
      */
     private $defaultFormat;
@@ -101,6 +106,16 @@ class ContentType implements MiddlewareInterface
     }
 
     /**
+     * Save the format name in a server request attribute.
+     */
+    public function attribute(string $attribute): self
+    {
+        $this->attribute = $attribute;
+
+        return $this;
+    }
+
+    /**
      * Set the available charsets. The first value will be used as default
      */
     public function charsets(array $charsets): self
@@ -141,6 +156,10 @@ class ContentType implements MiddlewareInterface
         $request = $request
             ->withHeader('Accept', $contentType)
             ->withHeader('Accept-Charset', $charset);
+
+        if ($this->attribute) {
+            $request = $request->withAttribute($this->attribute, $format);
+        }
 
         $response = $handler->handle($request);
 
