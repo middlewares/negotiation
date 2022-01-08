@@ -192,4 +192,20 @@ class ContentTypeTest extends TestCase
         $this->assertEquals('', $response->getHeaderLine('Content-Type'));
         $this->assertEquals(406, $response->getStatusCode());
     }
+
+    public function testAttribute()
+    {
+        $request = Factory::createServerRequest('GET', '/')->withHeader('Accept', 'text/json');
+
+        $response = Dispatcher::run([
+            (new ContentType(['json', 'html']))->attribute("format_name"),
+            function ($request) {
+                echo $request->getAttribute('format_name');
+            },
+        ], $request);
+
+        $this->assertEquals('', $response->getHeaderLine('application/json'));
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('json', (string) $response->getBody());
+    }
 }

@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.1.0] - 2022-01-08
+### Added
+- New option `attribute()` for `ContentType` middleware, to save the format name in a `ServerRequest` attribute [#10].
+
 ## [2.0.2] - 2020-12-02
 ### Added
 - Support for PHP 8
@@ -88,12 +92,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - *ContentEncoding* middleware removes the `Accept-Encoding` header if it does not match with any available option.
 
-## 0.1.0 - 2016-10-01
+## [0.1.0] - 2016-10-01
 First version
 
 [#6]: https://github.com/middlewares/negotiation/issues/6
 [#8]: https://github.com/middlewares/negotiation/issues/8
+[#10]: https://github.com/middlewares/negotiation/issues/10
 
+[2.1.0]: https://github.com/middlewares/negotiation/compare/v2.0.2...v2.1.0
 [2.0.2]: https://github.com/middlewares/negotiation/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/middlewares/negotiation/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/middlewares/negotiation/compare/v1.1.0...v2.0.0
@@ -104,3 +110,4 @@ First version
 [0.3.1]: https://github.com/middlewares/negotiation/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/middlewares/negotiation/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/middlewares/negotiation/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/middlewares/negotiation/releases/tag/v0.1.0
