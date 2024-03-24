@@ -109,7 +109,7 @@ class ContentLanguageTest extends TestCase
                 ['gl', 'es'],
                 '/mola/ola',
                 'gl-es, es;q=0.8, en;q=0.7',
-                '/es/mola/ola',
+                '/gl/mola/ola',
             ],
         ];
     }
