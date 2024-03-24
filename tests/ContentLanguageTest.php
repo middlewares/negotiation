@@ -69,7 +69,7 @@ class ContentLanguageTest extends TestCase
         $this->assertEquals($language, (string) $response->getBody());
     }
 
-    public function languagesPathProvider(): array
+    public static function languagesPathProvider(): array
     {
         return [
             [
