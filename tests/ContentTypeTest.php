@@ -124,7 +124,7 @@ class ContentTypeTest extends TestCase
         $this->assertFalse($response->hasHeader('X-Content-Type-Options'));
     }
 
-    public function charsetProvider(): array
+    public static function charsetProvider(): array
     {
         return [
             [
