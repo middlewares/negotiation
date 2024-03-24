@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContentLanguageTest extends TestCase
 {
-    public function languagesProvider(): array
+    public static function languagesProvider(): array
     {
         return [
             [

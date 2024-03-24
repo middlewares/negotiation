@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContentEncodingTest extends TestCase
 {
-    public function encodingsProvider(): array
+    public static function encodingsProvider(): array
     {
         return [
             [

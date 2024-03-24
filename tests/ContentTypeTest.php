@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContentTypeTest extends TestCase
 {
-    public function formatsProvider(): array
+    public static function formatsProvider(): array
     {
         return [
             [
