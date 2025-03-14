@@ -52,7 +52,7 @@ class ContentLanguage implements MiddlewareInterface
      * Whether returns a 302 response to the new path.
      * Note: This only works if usePath is true.
      */
-    public function redirect(ResponseFactoryInterface $responseFactory = null): self
+    public function redirect(?ResponseFactoryInterface $responseFactory = null): self
     {
         $this->responseFactory = $responseFactory ?: Factory::getResponseFactory();
 
