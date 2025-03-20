@@ -10,6 +10,9 @@ use PHPUnit\Framework\TestCase;
 
 class ContentEncodingTest extends TestCase
 {
+    /**
+     * @return array<array<string|string[]>>
+     */
     public static function encodingsProvider(): array
     {
         return [
@@ -35,8 +38,9 @@ class ContentEncodingTest extends TestCase
 
     /**
      * @dataProvider encodingsProvider
+     * @param string[] $encodings
      */
-    public function testEncoding(array $encodings, string $accept = null, string $encoding = '')
+    public function testEncoding(array $encodings, ?string $accept = null, string $encoding = ''): void
     {
         $request = Factory::createServerRequest('GET', '/');
 

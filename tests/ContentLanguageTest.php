@@ -10,6 +10,9 @@ use PHPUnit\Framework\TestCase;
 
 class ContentLanguageTest extends TestCase
 {
+    /**
+       * @return array<array<int, string|array<string>>>
+     */
     public static function languagesProvider(): array
     {
         return [
@@ -50,8 +53,9 @@ class ContentLanguageTest extends TestCase
 
     /**
      * @dataProvider languagesProvider
+     * @param string[] $languages
      */
-    public function testLanguages(array $languages, string $accept = null, string $language = null)
+    public function testLanguages(array $languages, ?string $accept = null, ?string $language = null): void
     {
         $request = Factory::createServerRequest('GET', '/');
 
@@ -69,6 +73,9 @@ class ContentLanguageTest extends TestCase
         $this->assertEquals($language, (string) $response->getBody());
     }
 
+    /**
+       * @return array<array<int, string|array<string>>>
+     */
     public static function languagesPathProvider(): array
     {
         return [
@@ -116,14 +123,15 @@ class ContentLanguageTest extends TestCase
 
     /**
      * @dataProvider languagesPathProvider
+     * @param string[] $languages
      */
     public function testLanguagesPath(
         array $languages,
         string $uri,
         string $accept,
         string $location,
-        string $language = null
-    ) {
+        ?string $language = null
+    ): void {
         $request = Factory::createServerRequest('GET', $uri)->withHeader('Accept-Language', $accept);
 
         $response = Dispatcher::run([
@@ -131,6 +139,7 @@ class ContentLanguageTest extends TestCase
             function ($request) {
                 $language = $request->getHeaderLine('Accept-Language');
                 echo $language;
+
                 return Factory::createResponse()->withHeader('Content-Language', $language);
             },
         ], $request);
