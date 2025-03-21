@@ -18,7 +18,7 @@ class ContentType implements MiddlewareInterface
     use NegotiationTrait;
 
     /**
-     * @var array<string, array<string|bool>> Available formats with the mime types
+     * @var array<string,array<string,string[]|bool>> Available formats with the mime types
      */
     private $formats;
 
@@ -99,7 +99,7 @@ class ContentType implements MiddlewareInterface
     public function __construct(?array $formats = null)
     {
         $this->formats = self::getFormats($formats);
-        $this->defaultFormat = key($this->formats);
+        $this->defaultFormat = (string) key($this->formats);
     }
 
     /**
@@ -159,12 +159,13 @@ class ContentType implements MiddlewareInterface
             $format = $this->defaultFormat;
         }
 
+        /** @phpstan-ignore-next-line */
         $contentType = $this->formats[$format]['mime-type'][0];
         $charset = $this->detectCharset($request) ?: current($this->charsets);
 
         $request = $request
             ->withHeader('Accept', $contentType)
-            ->withHeader('Accept-Charset', $charset);
+            ->withHeader('Accept-Charset', (string) $charset);
 
         if ($this->attribute) {
             $request = $request->withAttribute($this->attribute, $format);
