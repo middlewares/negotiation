@@ -14,7 +14,7 @@ class ContentEncoding implements MiddlewareInterface
     use NegotiationTrait;
 
     /**
-     * @var array Available encodings
+     * @var array<string> Available encodings
      */
     private $encodings = [
         'gzip',
@@ -23,8 +23,10 @@ class ContentEncoding implements MiddlewareInterface
 
     /**
      * Define de available encodings.
+     *
+     * @param array<string> $encodings
      */
-    public function __construct(array $encodings = null)
+    public function __construct(?array $encodings = null)
     {
         if ($encodings !== null) {
             $this->encodings = $encodings;
