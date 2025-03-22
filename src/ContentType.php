@@ -18,7 +18,7 @@ class ContentType implements MiddlewareInterface
     use NegotiationTrait;
 
     /**
-     * @var array Available formats with the mime types
+     * @var array<string,array<string,string[]|bool>> Available formats with the mime types
      */
     private $formats;
 
@@ -33,7 +33,7 @@ class ContentType implements MiddlewareInterface
     private $defaultFormat;
 
     /**
-     * @var array Available charsets
+     * @var array<string> Available charsets
      */
     private $charsets = ['UTF-8'];
 
@@ -49,6 +49,8 @@ class ContentType implements MiddlewareInterface
 
     /**
      * Return the default formats.
+     *
+     * @return array<string,array<string,string[]|bool>>
      */
     public static function getDefaultFormats(): array
     {
@@ -57,8 +59,11 @@ class ContentType implements MiddlewareInterface
 
     /**
      * Return the default formats.
+     *
+     * @param  array<array<array|mixed>|string>|null     $formats
+     * @return array<string,array<string,string[]|bool>>
      */
-    private static function getFormats(array $formats = null): array
+    private static function getFormats(?array $formats = null): array
     {
         $defaults = static::getDefaultFormats();
 
@@ -88,17 +93,19 @@ class ContentType implements MiddlewareInterface
 
     /**
      * Define de available formats.
+     *
+     * @param string[] $formats
      */
-    public function __construct(array $formats = null)
+    public function __construct(?array $formats = null)
     {
         $this->formats = self::getFormats($formats);
-        $this->defaultFormat = key($this->formats);
+        $this->defaultFormat = (string) key($this->formats);
     }
 
     /**
      * Return an error response (406) if not format has been found
      */
-    public function errorResponse(ResponseFactoryInterface $responseFactory = null): self
+    public function errorResponse(?ResponseFactoryInterface $responseFactory = null): self
     {
         $this->responseFactory = $responseFactory ?: Factory::getResponseFactory();
 
@@ -117,6 +124,8 @@ class ContentType implements MiddlewareInterface
 
     /**
      * Set the available charsets. The first value will be used as default
+     *
+     * @param array<string> $charsets
      */
     public function charsets(array $charsets): self
     {
@@ -150,12 +159,13 @@ class ContentType implements MiddlewareInterface
             $format = $this->defaultFormat;
         }
 
+        /** @phpstan-ignore-next-line */
         $contentType = $this->formats[$format]['mime-type'][0];
         $charset = $this->detectCharset($request) ?: current($this->charsets);
 
         $request = $request
             ->withHeader('Accept', $contentType)
-            ->withHeader('Accept-Charset', $charset);
+            ->withHeader('Accept-Charset', (string) $charset);
 
         if ($this->attribute) {
             $request = $request->withAttribute($this->attribute, $format);
@@ -192,7 +202,10 @@ class ContentType implements MiddlewareInterface
         }
 
         foreach ($this->formats as $format => $data) {
-            if (in_array($extension, $data['extension'], true)) {
+            /** @var string[] $formatExtension */
+            $formatExtension = $data['extension'];
+
+            if (in_array($extension, $formatExtension, true)) {
                 return $format;
             }
         }
@@ -214,7 +227,10 @@ class ContentType implements MiddlewareInterface
 
         if ($mime !== null) {
             foreach ($this->formats as $format => $data) {
-                if (in_array($mime, $data['mime-type'], true)) {
+                /** @var string[] $formtMimeType */
+                $formtMimeType = $data['mime-type'];
+
+                if (in_array($mime, $formtMimeType, true)) {
                     return $format;
                 }
             }

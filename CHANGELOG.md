@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [2.2.0] - 2025-03-21
+### Added
+- Better typing support.
+
 ## [2.1.2] - 2025-03-14
 ### Fixed
 - Php 8.4 compatibility [#12]

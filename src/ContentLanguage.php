@@ -16,7 +16,7 @@ class ContentLanguage implements MiddlewareInterface
     use NegotiationTrait;
 
     /**
-     * @var array Allowed languages
+     * @var array<string> Allowed languages
      */
     private $languages = [];
 
@@ -32,6 +32,8 @@ class ContentLanguage implements MiddlewareInterface
 
     /**
      * Define de available languages.
+     *
+     * @param array<string> $languages
      */
     public function __construct(array $languages)
     {
